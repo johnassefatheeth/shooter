@@ -1,21 +1,47 @@
 import { Environment, OrbitControls } from "@react-three/drei";
 import { Map } from "./Map";
 import { useEffect, useState } from "react";
-import {insertCoin} from "playroomkit"
+import {Joystick, insertCoin, myPlayer, onPlayerJoin, setState} from "playroomkit"
+import { CharacterControl } from "./CharacterControl";
 
 export const Experience = () => {
 
-  const [players,setplayers]=useState([])
+  const [players,setPlayers]=useState([])
 
 
-  const start=async()=>{
+  const start = async () => {
+    // Start the game
     await insertCoin();
-  }
 
-  useEffect(()=>{
+    // Create a joystick controller for each joining player
+    onPlayerJoin(async(state) => {
+      // Joystick will only create UI for current player (myPlayer)
+      // For others, it will only sync their state
+      const joystick = new Joystick(state, {
+        type: "angular",
+        buttons: [{ id: "fire", label: "Fire" }],
+      });
+      const newPlayer = { state, joystick };
+      state.setState("health", 100);
+      state.setState("deaths", 0);
+      state.setState("kills", 0);
+      setPlayers((players) => [...players, newPlayer]);
+      state.onQuit(() => {
+        setPlayers((players) => players.filter((p) => p.state.id !== state.id));
+      });
+    });
+  };
+
+
+useEffect(()=>{
     start()
-  },[])
+    console.log(players)
+},[])
 
+useEffect(()=>{
+  start()
+  console.log(players)
+},[players])
   return (
     <>
       <directionalLight
@@ -36,6 +62,9 @@ export const Experience = () => {
 
       <OrbitControls />
       <Map/>
+      {players.map(({ state, joystick },index) => (
+          <CharacterControl key={state.id} position-x={index*2} state={state} joystick={joystick} usePlayer={state.id === myPlayer()?.id} />
+        ))}
       <Environment preset="sunset" />
     </>
   );

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useGLTF } from '@react-three/drei'
+import { RigidBody } from "@react-three/rapier";
 
 export const Map = () => {
     const map=useGLTF('./models/map.glb')
@@ -15,7 +16,9 @@ export const Map = () => {
         
     })
   return (
-    <primitive object={map.scene} />
+    <RigidBody colliders="trimesh" type="fixed">
+        <primitive object={map.scene} />
+    </RigidBody>
   )
 }
 

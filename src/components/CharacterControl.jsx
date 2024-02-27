@@ -32,23 +32,28 @@ export const CharacterControl = ({
         }
 
         rigBod.current.applyImpulse(impulse, true)
+        
+        
        }
        else{
         setAnimation("Idle")
        }
-        const pos =useState()
-        pos= state.getState("pos");
+       
 
 
        if (isHost()) {
         state.setState("pos", rigBod.current.translation());
-      } else {
-        console.log(pos)
+      } 
+      else {
+        const pos = state.getState("pos");
         if (pos) {
-          rigBod.current.setTranslation(pos);
+          rigBod.current.setTranslation( pos );
         }
       }
+      
     })
+
+    console.log(rigBod)
   return (
     
     <group ref={group} {...props}>

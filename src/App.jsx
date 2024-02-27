@@ -7,7 +7,7 @@ import { Physics } from "@react-three/rapier";
 
 function App() {
   return (
-    <Canvas shadows camera={{ position: [0, 30, 0], fov: 30 }}>
+    <Canvas shadows camera={{ position: [0, 20, 10], fov: 30 }}>
       <color attach="background" args={["#ececec"]} />
       <SoftShadows size={20}/>
       <Suspense>
